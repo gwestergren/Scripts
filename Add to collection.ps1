@@ -1,4 +1,4 @@
-﻿get-content "C:\temp\Systems.txt" | foreach { Add-CMDeviceCollectionDirectMembershipRule -CollectionName "Remediation Item 78675 Winzip" -ResourceID (Get-CMDevice -Name $_).ResourceID }
+﻿get-content "C:\temp\Systems.txt" | ForEach-Object { Add-CMDeviceCollectionDirectMembershipRule -CollectionName "Remediation Item 78675 Winzip" -ResourceID (Get-CMDevice -Name $_).ResourceID }
 
 ping -t DRW1GC008
 
@@ -10,7 +10,7 @@ nslookup 192.168.132.75
 
 Get-ADComputer -filter * -Properties name, CN, CanonicalName, dnshostname, Enabled, LastLogonDate, PasswordLastSet, PasswordExpired, whenChanged, whenCreated, OperatingSystem, OperatingSystemVersion | export-csv -NoTypeInformation c:\temp\computerlist.csv
 
-$computers = Get-ADComputer -filter * -properties CanonicalName, LastLogonDate, PasswordLastSet, PasswordExpired, whenChanged, whenCreated, OperatingSystem, OperatingSystemVersion | select name, CanonicalName, dnshostname, Enabled, LastLogonDate, PasswordLastSet, PasswordExpired, whenChanged, whenCreated, OperatingSystem, OperatingSystemVersion 
+$computers = Get-ADComputer -filter * -properties CanonicalName, LastLogonDate, PasswordLastSet, PasswordExpired, whenChanged, whenCreated, OperatingSystem, OperatingSystemVersion | Select-Object name, CanonicalName, dnshostname, Enabled, LastLogonDate, PasswordLastSet, PasswordExpired, whenChanged, whenCreated, OperatingSystem, OperatingSystemVersion 
 foreach($computer in $computers){
     $pingtest = Test-Connection -ComputerName $computer.name -Quiet -Count 1 -ErrorAction SilentlyContinue
     if($pingtest){

@@ -1,6 +1,6 @@
 ﻿
 $user = "gwestergre" + "@llbean.com"
-$ADUser = Get-aduser -Identity $user.split("@")[0] | select name
+$ADUser = Get-aduser -Identity $user.split("@")[0] | Select-Object name
 $body = "Hi $ADUser, 
 
 I'm with the Desktop Services team working for Carolyn Davis on our Vulnerability items and your pc, L3XM6K13-LP, showed up on our list as having Oracle Java vulnerabilities.

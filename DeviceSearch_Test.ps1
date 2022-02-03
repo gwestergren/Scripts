@@ -1,5 +1,5 @@
 ﻿
-$files = Get-ChildItem -path filesystem::'\\llb-pkg01\source\Remediation source\Reports\sccmdevicelist*.csv' | Select -ExpandProperty FullName
+$files = Get-ChildItem -path filesystem::'\\llb-pkg01\source\Remediation source\Reports\sccmdevicelist*.csv' | Select-Object -ExpandProperty FullName
 $count = $files.count
 
 if ($count -le 7){
@@ -13,7 +13,7 @@ Import-CSV -Path filesystem::$file | Select-Object *,@{Name='filedate';Expressio
                      }
 
 $pcname= Read-Host -Prompt "Enter system name"
-$userlist | Where-Object {$_.name -eq $pcname} | ft name, LastActiveTime, IsActive, UserName, User, PingStatus, FileDate, FileTime
+$userlist | Where-Object {$_.name -eq $pcname} | Format-Table name, LastActiveTime, IsActive, UserName, User, PingStatus, FileDate, FileTime
 
 
 #@{n=”Date”;e={$getdate}}

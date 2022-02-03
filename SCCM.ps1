@@ -9,7 +9,7 @@ $c1 = 0
 Foreach ($tenhost in $TenHosts){
 $c1++
 Write-Progress -Activity 'Checking servers' -Status "Processing $($c1) of $($TenHosts.count)" -CurrentOperation $tenhost.name -PercentComplete (($c1/$TenHosts.Count) * 100)
-$sccmdevicelist = get-cmdevice -name $tenhost.name | select *, @{Name = 'User'; Expression = {(Get-aduser -Identity $_.lastlogonuser).name}},`
+$sccmdevicelist = get-cmdevice -name $tenhost.name | Select-Object *, @{Name = 'User'; Expression = {(Get-aduser -Identity $_.lastlogonuser).name}},`
 @{Name = 'PingStatus'; Expression = {(Test-Connection -ComputerName $tenhost.name -Quiet -Count 1 -ErrorAction SilentlyContinue)}}
 $sccmdevicelists += $sccmdevicelist
 }
