@@ -1,4 +1,5 @@
-﻿#
+﻿function ConnectSCCMSite {
+#
 # Press 'F5' to run this script. Running this script will load the ConfigurationManager
 # module for Windows PowerShell and will connect to the site.
 #
@@ -27,3 +28,4 @@ if((Get-PSDrive -Name $SiteCode -PSProvider CMSite -ErrorAction SilentlyContinue
 
 # Set the current location to be the site code.
 Set-Location "$($SiteCode):\" @initParams
+}
