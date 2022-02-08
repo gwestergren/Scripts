@@ -1,7 +1,7 @@
 ﻿#get-cmuser -name LLBEAN\jimenez1  | select name #, smsid
 #get-aduser gwestergre
-#$TenHosts = import-csv -Path C:\temp\TenableHosts.csv
-$TenHosts = Get-CMCollection -Name "~Software Updates - All targeted desktops" | Get-CMCollectionMember | Select-Object Name
+$TenHosts = import-csv -Path C:\temp\java.csv
+#$TenHosts = Get-CMCollection -Name "~Software Updates - All targeted desktops" | Get-CMCollectionMember | Select-Object Name
 
 $sccmdevicelists = @()
 $c1 = 0
@@ -14,9 +14,11 @@ $sccmdevicelist = get-cmdevice -name $tenhost.name | Select-Object *, @{Name = '
 $sccmdevicelists += $sccmdevicelist
 }
 $date = get-date -Format "_MMddyy_HHmm"
-$sccmdevicelists | export-csv -NoTypeInformation "c:\temp\sccmdevicelist$date.csv"
+$sccmdevicelists | export-csv -NoTypeInformation "c:\temp\java$date.csv"
+#$sccmdevicelists | export-csv -NoTypeInformation "c:\temp\sccmdevicelist$date.csv"
 
-$file = "c:\temp\sccmdevicelist$date.csv"
+#$file = "c:\temp\sccmdevicelist$date.csv"
+$file = "c:\temp\java$date.csv"
 $dest = "\\llb-pkg01\source\Remediation source\Reports\"
 move-Item $file -Destination filesystem::$dest
 
