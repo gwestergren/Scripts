@@ -11,7 +11,20 @@ $c1++
 Write-Progress -Activity 'Checking servers' -Status "Processing $($c1) of $($TenHosts.count)" -CurrentOperation $tenhost.name -PercentComplete (($c1/$TenHosts.Count) * 100)
 $sccmdevicelist = get-cmdevice -name $tenhost.name | Select-Object *, @{Name = 'User'; Expression = {(Get-aduser -Identity $_.lastlogonuser).name}},`
 @{Name = 'PingStatus'; Expression = {(Test-Connection -ComputerName $tenhost.name -Quiet -Count 1 -ErrorAction SilentlyContinue)}}
+
+if ($sccmdevicelist -ne $null){
 $sccmdevicelists += $sccmdevicelist
+}
+else {
+    Write-Host -ForegroundColor Red $tenhost.name" not in SCCM"
+    $myObject = [PSCustomObject]@{
+        Name = $tenhost.name
+        User = "not in SCCM"
+    }
+    $sccmdevicelist = $myObject | Select-Object name, user
+    $sccmdevicelists += $sccmdevicelist
+}
+
 }
 $date = get-date -Format "_MMddyy_HHmm"
 $sccmdevicelists | export-csv -NoTypeInformation "c:\temp\java$date.csv"
