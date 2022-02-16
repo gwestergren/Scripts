@@ -1,27 +1,26 @@
-﻿$details = import-csv C:\temp\Detail_List.csv
-$details."netbios name"
-
-foreach ($item in $details){
-    if ($item."netbios name" -ne $null) {$parts = $item."netbios name".Split('\')
-        
-    }
-    # modify the header2 column in our csv input
-    $parts[1]
-#    $newDate = $parts[1] + " " + $parts[2] + " " + $parts[5]
-#    $item.header2 = [DateTime]::Parse($newDate) | Get-Date -Format d
-}
+﻿
 
 
-$detailgroups = $details | Group-Object -property plugin | Where-Object {$_.count -eq 1}  | Select-Object group 
-$vulnerabilities = $detailgroups.group | Select-Object * 
+$vulnerability | export-csv -NoTypeInformation c:\temp\vuls.csv
+
+$temporary = $vulnerabilities.where{$_.'DNS Name' -ne ""} | Select-Object *, @{Name = 'Hostname'; Expression = {$_."dns name".Split('.')[0]}}
+$temporary1 = $vulnerabilities.where{$_.'netbios name' -ne ""} | Select-Object *, @{Name = 'Hostname'; Expression = {$_."netbios name".Split('\')[1]}}
+
+$vulnerabilities.where{$_.'netbios Name' -ne ""}
+$vulnerabilities.foreach("DNS Name")
 
 $vulnerabilities | Where-Object {$_.hostname -eq $pcname} | Select-Object HostName, "DNS Name", Plugin, "Plugin Name", "Severity", "Plugin Output", Synopsis, Description, Solution
 
-
 ($detailgroups).count
 
-[11]
-#$pcname= Read-Host -Prompt "Enter system name"
-#$vulnerabilities."plugin name"
-#$detailgroups = $details | group -property hostname | where {$_.count -eq 1}  | select group 
-#$singlehosts = $details.hostname | group | where {$_.count -eq 1}
+$pcname= Read-Host -Prompt "Enter system name"
+$vulnerabilities."plugin name"
+$detailgroups = $details | group -property hostname | where {$_.count -eq 1}  | select group 
+$singlehosts = $details.hostname | group | where {$_.count -eq 1}
+
+    if (($item."netbios name").Length -gt 1) {$parts = $item."netbios name".Split('\')[1]
+    write-host -ForegroundColor Blue $parts
+    $myObject = [PSCustomObject]@{
+        HostName = $parts
+        NetName = $item."netbios name"
+        }
