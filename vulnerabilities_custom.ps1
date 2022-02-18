@@ -1,11 +1,11 @@
-#globals
+﻿#globals
 $global:payloadcoll       = @()
 
 $details = import-csv C:\temp\Detail_List.csv
 
 #$detailgroups = $details | Group-Object -property plugin | Where-Object {$_.count -le 9}  | Select-Object group 
 $detailgroups = $details | Where-Object {$_."plugin name" -like "*visual studio*"} | Select-Object *
-$vulnerabilities = $detailgroups | Select-Object * 
+$vulnerabilities = $detailgroups  
 #$vulnerabilities = $detailgroups.group | Select-Object * 
 $vulnerability = @()
 $c1 = 0
@@ -48,12 +48,10 @@ foreach ($item in $vulnerability){
     
     If you have any issues with your application(s) or device after this update please contact Client Support at x26662 or feel free to reach out to me directly.
 
-    If you no longer need this application please let me know and we will remove it from your system.  
-
     ====================================================================================================================
     Solution:
 
-    $solution
+    Uninstall Visual Studio
 
 
 
@@ -67,7 +65,7 @@ foreach ($item in $vulnerability){
     gwestergre@llbean.com
 
     "
-    Send-MailMessage -From 'Greg Westergren <gwestergre@llbean.com>' -To gwestergre@llbean.com -Subject "Vulnerability $pluginid" -Body $body -Priority High -SmtpServer 'llb-ex01'
+    Send-MailMessage -From 'Greg Westergren <gwestergre@llbean.com>' -To $emailuser -Subject "Vulnerability $pluginid" -Body $body -Priority High -SmtpServer 'llb-ex01'
 }
     Else {
     $body = "$hostname does not have a user associated with it"
