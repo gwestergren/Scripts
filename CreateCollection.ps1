@@ -85,20 +85,20 @@
   }
 }
 
-$collectionlist =  Get-SCCMCollectionsInFolder -FolderID 16778635 -SiteServer LLB-SCCM12PRI01.LLBEAN.COM | select name
-$collectionlist
-
+$collectionlist =  Get-SCCMCollectionsInFolder -FolderID 16778635 -SiteServer LLB-SCCM12PRI01.LLBEAN.COM | select name | Where-Object {$_.name -like "*remediation item*"}
+$collectionlist 
 
 $details = import-csv C:\temp\Detail_List.csv
 
 #$detailgroups = $details | Group-Object -property plugin | Where-Object {$_.count -le 9}  | Select-Object group 
 $detailgroups = $details | Where-Object {$_."plugin name" -like "*visual studio*"} | Select-Object *
-$vulnerabilities = $detailgroups | Select-Object * 
-$vulnerabilitiesgroup = $vulnerabilities | Group-Object -property "plugin name"
+#$vulnerabilities = $detailgroups | Select-Object * 
+#$vulnerabilitiesgroup = $vulnerabilities | Group-Object -property "plugin name"
+$vulnerabilitiesgroup = $detailgroups | Group-Object -property "plugin name"
 
 foreach ($item in $vulnerabilitiesgroup){
 
-    $pluginid = $item.group.plugin[0]
+    $pluginid = $item.group.plugin | Select -first 1
     $pluginname = $item.name.substring(0, [system.math]::Min(90, $item.name.Length))
     $collectionname = "Remediation Item $pluginid $pluginname"
 
@@ -108,8 +108,8 @@ foreach ($item in $vulnerabilitiesgroup){
 
 }
 
-Get-CMCollection -Name $collectionname.name | Remove-CMCollection -Force
-
+#Get-CMCollection -Name $collectionname.name | Remove-CMCollection -Force
+#============
 $vulnerability = @()
 
 foreach ($item in $vulnerabilities){

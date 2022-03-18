@@ -1,5 +1,5 @@
 ﻿$pcname= Read-Host -Prompt "Enter system name"
-$files = Get-ChildItem -path filesystem::'\\llb-pkg01\source\Remediation source\Reports\sccmdevicelist*.csv' | Select-Object -ExpandProperty FullName
+$files = Get-ChildItem -path filesystem::'\\llb-pkg01\source\Remediation source\Reports\sccmdevicelist*.csv' | Select-Object -ExpandProperty FullName -Last 10
 
 $userlist = foreach ($file in $files){
 $filename = ($file.Split("\")[-1]).split(".")[0]

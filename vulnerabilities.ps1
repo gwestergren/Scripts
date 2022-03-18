@@ -3,8 +3,36 @@ $global:payloadcoll       = @()
 
 $details = import-csv C:\temp\Detail_List.csv
 
-#$detailgroups = $details | Group-Object -property plugin | Where-Object {$_.count -le 9}  | Select-Object group 
-$detailgroups = $details | Where-Object {$_."plugin name" -like "*visual studio*"} | Select-Object *
+$systemnames = @()
+foreach ($name in $details){
+$dnsname = ($name."dns name".Split(".")[0])
+$netbiosname = ($name."netbios name".Split("\")[1])
+
+    if ($netbiosname.Length -gt 1){
+        $sccmdevicelist = [PSCustomObject]@{
+        NetBiosname = $name."NetBios name"
+        Name = "not in SCCM"
+        }
+        $systemnames += $netbiosname
+        }
+    else{
+    
+    
+    
+        $systemnames += $dnsname
+        }
+}
+$systemnames
+
+$pcname= Read-Host -Prompt "Enter System name"
+#$pluginname= Read-Host -Prompt "Enter Plugin name"
+
+$systemnames.Contains("$pcname")
+$details | Where-Object {$_."netbios name" -like "*$systemnames*"} | Select-Object * 
+
+#$detailgroups = $details | Where-Object {$_."netbios name" -like "*$systemnames*"} | Select-Object * 
+#$detailgroups = $details | Group-Object -property "NetBios Name" | Where-Object {$_.count -lt 2} | Select-Object group
+#$detailgroups = $details | Where-Object {$_."plugin name" -like "*fire*"} | Select-Object *
 $vulnerabilities = $detailgroups | Select-Object * 
 #$vulnerabilities = $detailgroups.group | Select-Object * 
 $vulnerability = @()
@@ -12,7 +40,7 @@ $c1 = 0
 #$hostname = @()
 foreach ($item in $vulnerabilities){
     $c1++
-    Write-Progress -Activity 'Checking servers with less then 9 vulnerabilities' -Status "Processing $($c1) of $($vulnerabilities.count)" -CurrentOperation $item."NetBIOS Name" -PercentComplete (($c1/$vulnerabilities.Count) * 100)
+    Write-Progress -Activity 'Checking systems' -Status "Processing $($c1) of $($vulnerabilities.count)" -CurrentOperation $item."NetBIOS Name" -PercentComplete (($c1/$vulnerabilities.Count) * 100)
 
     if (($item."netbios name").Length -gt 1) {$parts = $item | Select-Object *, @{Name = 'Hostname'; Expression = {$_."netbios name".Split('\')[1]}}
 
@@ -42,29 +70,29 @@ foreach ($item in $vulnerability){
     #$ADUser = Get-aduser -Identity $user.split("@")[0] | Select-Object name
 
     if ($fullname -ne $null){
-    $body = "Hi $fullname, 
+$body = "Hi $fullname, 
 
-    This is a notification that we have identified a security vulnerability with ($pluginname) that is installed on your device, $hostname.  We will attempt to remediate this vulnerability with the solution listed below.
+This is a notification that we have identified a security vulnerability with ($pluginname) that is installed on your device, $hostname.  We will attempt to remediate this vulnerability with the solution listed below.
     
-    If you have any issues with your application(s) or device after this update please contact Client Support at x26662 or feel free to reach out to me directly.
+If you have any issues with your application(s) or device after this update please contact Client Support at x26662 or feel free to reach out to me directly.
 
-    If you no longer need this application please let me know and we will remove it from your system.  
+If you no longer need this application please let me know and we will remove it from your system.  
 
-    ====================================================================================================================
-    Solution:
+====================================================================================================================
+Solution:
 
-    $solution
+$solution
 
 
 
     
-    Thank you
+Thank you
 
-    Greg Westergren
-    Systems Engineer
-    An Employee of ettain group
-    Working at L.L.Bean, Inc.
-    gwestergre@llbean.com
+Greg Westergren
+Systems Engineer
+An Employee of ettain group
+Working at L.L.Bean, Inc.
+gwestergre@llbean.com
 
     "
     Send-MailMessage -From 'Greg Westergren <gwestergre@llbean.com>' -To gwestergre@llbean.com -Subject "Vulnerability $pluginid" -Body $body -Priority High -SmtpServer 'llb-ex01'
