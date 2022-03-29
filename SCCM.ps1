@@ -1,6 +1,6 @@
 ﻿#get-cmuser -name LLBEAN\gwestergre  | select name #, smsid
 #get-aduser gwestergre
-$file = "bridge"
+$file = "dreamweaver"
 $TenHosts = import-csv -Path C:\temp\$file.csv
 #$TenHosts = Get-CMCollection -Name "~Software Updates - All targeted desktops" | Get-CMCollectionMember | Select-Object Name
 

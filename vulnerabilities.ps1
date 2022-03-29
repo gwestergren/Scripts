@@ -24,15 +24,21 @@ $netbiosname = ($name."netbios name".Split("\")[1])
 }
 $systemnames
 
-$pcname= Read-Host -Prompt "Enter System name"
+#$pcname= Read-Host -Prompt "Enter System name"
 #$pluginname= Read-Host -Prompt "Enter Plugin name"
 
 $systemnames.Contains("$pcname")
 $details | Where-Object {$_."netbios name" -like "*$systemnames*"} | Select-Object * 
 
+
+
+
+$Vulnerability_Name = Read-Host -Prompt "Enter Plugin name"
+$details = import-csv C:\temp\Detail_List.csv
+
 #$detailgroups = $details | Where-Object {$_."netbios name" -like "*$systemnames*"} | Select-Object * 
 #$detailgroups = $details | Group-Object -property "NetBios Name" | Where-Object {$_.count -lt 2} | Select-Object group
-#$detailgroups = $details | Where-Object {$_."plugin name" -like "*fire*"} | Select-Object *
+$detailgroups = $details | Where-Object {$_."plugin name" -like "*$Vulnerability_Name*"} | Select-Object *
 $vulnerabilities = $detailgroups | Select-Object * 
 #$vulnerabilities = $detailgroups.group | Select-Object * 
 $vulnerability = @()
@@ -51,13 +57,15 @@ foreach ($item in $vulnerabilities){
     $vulnerability += $parts 
     }
 }
-$vulnerability | export-csv -NoTypeInformation c:\temp\vul.csv
+#$vulnerability | export-csv -NoTypeInformation c:\temp\vul.csv
 $c1 = 0
 foreach ($item in $vulnerability){
     $c1++
     Write-Progress -Activity 'Sending emails' -Status "Processing $($c1) of $($vulnerability.count)" -CurrentOperation $item."NetBIOS Name" -PercentComplete (($c1/$vulnerability.Count) * 100)
 
-    $sccmdevicelist = get-cmdevice -name $item.hostname | Select-Object *, @{Name = 'User'; Expression = {(Get-aduser -Identity $_.lastlogonuser).name}}
+    $sccmdevicelist = get-cmdevice -name $item.name | Select-Object Name, @{Name = 'PingStatus'; Expression = {(Test-Connection -ComputerName $item.name -Quiet -Count 1 -ErrorAction SilentlyContinue)}},`
+    @{Name = 'ADUser'; Expression = {(Get-aduser -Identity $_.lastlogonuser).name}}, LastLogonUser, CurrentLogonUser, UserName, PrimaryUser, ADLastLogonTime, CNIsOnline, CNLastOfflineTime, CNLastOnlineTime,`
+    DeviceOS, DeviceOSBuild, IsActive, LastActiveTime, LastClientCheckTime, LastHardwareScan, LastPolicyRequest, LastSoftwareScan, LastStatusMessage, SerialNumber
 
     $emailuser = $sccmdevicelist.LastLogonUser + "@llbean.com"
     $fullname = $sccmdevicelist.user
@@ -68,7 +76,15 @@ foreach ($item in $vulnerability){
     $solution = $item.Solution
     $pluginid = $item.Plugin
     #$ADUser = Get-aduser -Identity $user.split("@")[0] | Select-Object name
+    $sccmdevicelists += $sccmdevicelist
 
+} 
+$date = get-date -Format "_MMddyy_HHmm"
+$sccmdevicelists | export-csv -NoTypeInformation "c:\temp\$Vulnerability_Name$date.csv"
+
+
+
+#remove above bracket if going to email
     if ($fullname -ne $null){
 $body = "Hi $fullname, 
 
