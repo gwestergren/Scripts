@@ -91,7 +91,7 @@ $collectionlist
 $details = import-csv C:\temp\Detail_List.csv
 
 #$detailgroups = $details | Group-Object -property plugin | Where-Object {$_.count -le 9}  | Select-Object group 
-$detailgroups = $details | Where-Object {$_."plugin name" -like "*dreamweaver*"} | Select-Object *
+$detailgroups = $details | Where-Object {$_."plugin name" -like "*after*"} | Select-Object *
 #$vulnerabilities = $detailgroups | Select-Object * 
 #$vulnerabilitiesgroup = $vulnerabilities | Group-Object -property "plugin name"
 $vulnerabilitiesgroup = $detailgroups | Group-Object -property "plugin name"
