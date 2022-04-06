@@ -24,13 +24,11 @@ $netbiosname = ($name."netbios name".Split("\")[1])
 }
 $systemnames
 
-#$pcname= Read-Host -Prompt "Enter System name"
+$pcname= Read-Host -Prompt "Enter System name"
 #$pluginname= Read-Host -Prompt "Enter Plugin name"
-
-$systemnames.Contains("$pcname")
-$details | Where-Object {$_."netbios name" -like "*$systemnames*"} | Select-Object * 
-
-
+#$systemnames.Contains("$pcname")
+$details = import-csv C:\temp\Detail_List.csv
+$details | Where-Object {$_."netbios name" -like "*$pcname*"} | sort plugin | select "Netbios Name", plugin, "Plugin Name", "last Observed"# | export-csv -NoTypeInformation C:\temp\LPC0W51F7-LP.csv
 
 
 $Vulnerability_Name = Read-Host -Prompt "Enter Plugin name"
