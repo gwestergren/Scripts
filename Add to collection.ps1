@@ -1,1 +1,1 @@
-﻿get-content "C:\temp\Systems.txt" | ForEach-Object { Add-CMDeviceCollectionDirectMembershipRule -CollectionName "Remediation Item Reboot Retail Machines" -ResourceID (Get-CMDevice -Name $_).ResourceID }
+﻿get-content "C:\temp\Systems.txt" | ForEach-Object { Add-CMDeviceCollectionDirectMembershipRule -CollectionName "Remediation item 156059 Adobe Photoshop upgrade" -ResourceID (Get-CMDevice -Name $_).ResourceID }
