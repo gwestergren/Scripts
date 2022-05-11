@@ -28,7 +28,7 @@ $pcname= Read-Host -Prompt "Enter System name"
 #$pluginname= Read-Host -Prompt "Enter Plugin name"
 #$systemnames.Contains("$pcname")
 $details = import-csv C:\temp\Detail_List.csv
-$details | Where-Object {$_."netbios name" -like "*$pcname*"} | sort plugin | select "Netbios Name", plugin, "Plugin Name", "last Observed"# | export-csv -NoTypeInformation C:\temp\LPC0W51F7-LP.csv
+$details | Where-Object {$_."netbios name" -like "*$pcname*"} | sort plugin | select "Netbios Name", plugin, "Plugin Name", "last Observed" | export-csv -NoTypeInformation C:\temp\LPC0HEGSB-LP.csv
 
 
 $Vulnerability_Name = Read-Host -Prompt "Enter Plugin name"
@@ -115,5 +115,5 @@ gwestergre@llbean.com
     $body = "$hostname does not have a user associated with it"
     Send-MailMessage -From 'Greg Westergren <gwestergre@llbean.com>' -To gwestergre@llbean.com -Subject "Vulnerability $pluginid has no user listed" -Body $body -Priority High -SmtpServer 'llb-ex01'
     }
-}
+
 

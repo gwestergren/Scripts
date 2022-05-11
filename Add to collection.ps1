@@ -1,1 +1,1 @@
-﻿get-content "C:\temp\Systems.txt" | ForEach-Object { Add-CMDeviceCollectionDirectMembershipRule -CollectionName "Remediation Item 158168 Zoom Client < 5.8.4" -ResourceID (Get-CMDevice -Name $_).ResourceID }
+﻿get-content "C:\temp\Systems.txt" | ForEach-Object { Add-CMDeviceCollectionDirectMembershipRule -CollectionName "Remediation Item 124028 Adobe Shockwave Player <= 12.3.4.204 Multiple memory corruption vulnerabilities (APSB19-20" -ResourceID (Get-CMDevice -Name $_).ResourceID }
