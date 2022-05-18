@@ -180,3 +180,9 @@ Function Get-InstalledApplication {
   }
   End{}
 }
+
+Get-InstalledApplication -ComputerName LR90NH419-LP -Name "Google Chrome"
+
+
+#$Program_Name = Read-Host -Prompt "Enter Plugin name"
+#Get-WmiObject -class win32_product | where {$_.Name -like "*$Program_Name*"}
